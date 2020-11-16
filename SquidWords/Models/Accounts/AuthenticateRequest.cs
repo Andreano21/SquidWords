@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace SquidWords.Models.Users
+namespace SquidWords.Models.Accounts
 {
-    public class AuthenticateModel
+    public class AuthenticateRequest
     {
         [Required]
-        public string Username { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
 
         [Required]
         public string Password { get; set; }

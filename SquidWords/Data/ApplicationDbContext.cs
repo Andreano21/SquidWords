@@ -6,14 +6,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Pomelo.EntityFrameworkCore.MySql;
 using SquidWords.Models;
-using SquidWords.Models.Users;
+using SquidWords.Models.Accounts;
+
 
 
 namespace SquidWords.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
+        public DbSet<Account> Accounts { get; set; }
         public DbSet<Word> Words { get; set; }
         public DbSet<PersonalWord> PersonalWords { get; set; }
         public DbSet<Dictionary> Dictionaries { get; set; }
