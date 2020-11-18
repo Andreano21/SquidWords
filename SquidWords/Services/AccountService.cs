@@ -118,7 +118,7 @@ namespace SquidWords.Services
             if (_context.Accounts.Any(x => x.Email == model.Email))
             {
                 // send already registered error in email to prevent account enumeration
-                sendAlreadyRegisteredEmail(model.Email, origin);
+                //sendAlreadyRegisteredEmail(model.Email, origin);
                 return;
             }
 
@@ -325,23 +325,15 @@ namespace SquidWords.Services
         private void sendVerificationEmail(Account account, string origin)
         {
             string message;
-            if (!string.IsNullOrEmpty(origin))
-            {
-                var verifyUrl = $"{origin}/account/verify-email?token={account.VerificationToken}";
-                message = $@"<p>Please click the below link to verify your email address:</p>
+            var verifyUrl = $"{origin}/accounts/verify-email?token={account.VerificationToken}";
+            message = $@"<p>Пожалуйста, нажмите на ссылку для подтверждения своей почты:</p>
                              <p><a href=""{verifyUrl}"">{verifyUrl}</a></p>";
-            }
-            else
-            {
-                message = $@"<p>Please use the below token to verify your email address with the <code>/accounts/verify-email</code> api route:</p>
-                             <p><code>{account.VerificationToken}</code></p>";
-            }
 
             _emailService.Send(
                 to: account.Email,
                 subject: "Sign-up Verification API - Verify Email",
-                html: $@"<h4>Verify Email</h4>
-                         <p>Thanks for registering!</p>
+                html: $@"<h4>Подтверждение почты.</h4>
+                         <p>Спасибо за регистрацию!</p>
                          {message}"
             );
         }
@@ -350,7 +342,7 @@ namespace SquidWords.Services
         {
             string message;
             if (!string.IsNullOrEmpty(origin))
-                message = $@"<p>If you don't know your password please visit the <a href=""{origin}/account/forgot-password"">forgot password</a> page.</p>";
+                message = $@"<p>If you don't know your password please visit the <a href=""{origin}/accounts/forgot-password"">forgot password</a> page.</p>";
             else
                 message = "<p>If you don't know your password you can reset it via the <code>/accounts/forgot-password</code> api route.</p>";
 
@@ -368,7 +360,7 @@ namespace SquidWords.Services
             string message;
             if (!string.IsNullOrEmpty(origin))
             {
-                var resetUrl = $"{origin}/account/reset-password?token={account.ResetToken}";
+                var resetUrl = $"{origin}/accounts/reset-password?token={account.ResetToken}";
                 message = $@"<p>Please click the below link to reset your password, the link will be valid for 1 day:</p>
                              <p><a href=""{resetUrl}"">{resetUrl}</a></p>";
             }

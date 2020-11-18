@@ -5,6 +5,9 @@ using System;
 using System.Collections.Generic;
 using SquidWords.Models.Accounts;
 using SquidWords.Services;
+using SquidWords.Data;
+using System.Linq;
+
 
 namespace SquidWords.Controllers
 {
@@ -12,13 +15,16 @@ namespace SquidWords.Controllers
     [Route("[controller]")]
     public class AccountsController : BaseController
     {
+        private readonly ApplicationDbContext _context;
         private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
 
         public AccountsController(
+            ApplicationDbContext context,
             IAccountService accountService,
             IMapper mapper)
         {
+            _context = context;
             _accountService = accountService;
             _mapper = mapper;
         }
@@ -61,21 +67,40 @@ namespace SquidWords.Controllers
         [HttpPost("register")]
         public IActionResult Register(RegisterRequest model)
         {
-            _accountService.Register(model, Request.Headers["origin"]);
-            return Ok(new { message = "Registration successful, please check your email for verification instructions" });
+            if (_context.Accounts.Any(x => x.Email == model.Email))
+                return BadRequest(new { message = "Аккаунт с такой почтой уже зарегестрирован." });
+
+            //ссылка на сервер, который примет токен для подтверждения регистрации
+            //string origin = Request.Headers["origin"];
+            string origin = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
+
+            _accountService.Register(model, origin);
+            return Ok(new { message = "Регистрация прошла успешно, проверьте свою почту для верификации своего аккаунта." });
+        }
+
+        [HttpGet("verify-email")]
+        public IActionResult VerifyEmail(string token)
+        {
+            _accountService.VerifyEmail(token);
+            return Ok(new { message = "Верификация прошла успешно, можете войти в аккаунт" });
         }
 
         [HttpPost("verify-email")]
         public IActionResult VerifyEmail(VerifyEmailRequest model)
         {
             _accountService.VerifyEmail(model.Token);
-            return Ok(new { message = "Verification successful, you can now login" });
+            return Ok(new { message = "Верификация прошла успешно, можете войти в аккаунт" });
         }
 
         [HttpPost("forgot-password")]
         public IActionResult ForgotPassword(ForgotPasswordRequest model)
         {
-            _accountService.ForgotPassword(model, Request.Headers["origin"]);
+
+            //ссылка на сервер, который примет токен для подтверждения регистрации
+            //string origin = Request.Headers["origin"];
+            string origin = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
+
+            _accountService.ForgotPassword(model, origin);
             return Ok(new { message = "Please check your email for password reset instructions" });
         }
 
