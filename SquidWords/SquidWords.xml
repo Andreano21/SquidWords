@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SquidWords</name>
+    </assembly>
+    <members>
+        <member name="M:SquidWords.Controllers.DictionariesController.Post(SquidWords.Models.Dictionary)">
+            <summary>
+            Создать базовый словарь
+            </summary>
+            <param name="dictionary">Словарь для добавления в БД</param>
+            <response code="403">В доступе отказано.</response>
+            <response code="404">Словарь не найден.</response>
+        </member>
+        <member name="M:SquidWords.Controllers.PersonalDictionariesController.Get">
+            <summary>
+            Получить персональные словари для текущего пользователя.
+            </summary>
+        </member>
+        <member name="M:SquidWords.Controllers.PersonalDictionariesController.GetTimetable">
+            <summary>
+            Получить персональное расписание для текущего пользователя.
+            </summary>
+            <response code="404">Словари не найдены.</response>
+        </member>
+        <member name="M:SquidWords.Controllers.PersonalDictionariesController.GetTimetableForToday">
+            <summary>
+            Получить персональные словари со словами на сегодня.
+            </summary>
+            <response code="404">Словари не найдены.</response>
+        </member>
+        <member name="M:SquidWords.Controllers.PersonalDictionariesController.GetTimetableStarted">
+            <summary>
+            Получить персональные словари со словами которые уже изучались.
+            </summary>
+            <response code="404">Словари не найдены.</response>
+        </member>
+        <member name="M:SquidWords.Controllers.PersonalDictionariesController.GetTimetablePlanned">
+            <summary>
+            Получить персональные словари со словами которые еще не изучались.
+            </summary>
+            <response code="404">Словари не найдены.</response>
+        </member>
+        <member name="M:SquidWords.Controllers.PersonalDictionariesController.GetTimetableInfo">
+            <summary>
+            Получить информацию по персональному расписанию (количество слов в каждой группе).
+            </summary>
+        </member>
+        <member name="M:SquidWords.Controllers.PersonalDictionariesController.Get(System.Int32)">
+            <summary>
+            Получить персональный словарь по индексу.
+            </summary>
+            <param name="id">Id базового словаря на основе которого будет создан персональный</param>
+            <response code="403">В доступе отказано.</response>
+            <response code="404">Словарь не найден.</response>
+        </member>
+        <member name="M:SquidWords.Controllers.PersonalDictionariesController.Post(System.Int32)">
+            <summary>
+            Создает персональный словарь или возвращает уже существующий.
+            </summary>
+            <param name="id">Id базового словаря на основе которого будет создан персональный</param>
+            <response code="200">Персональный словарь создан.</response>
+            <response code="403">В доступе отказано.</response>
+            <response code="404">Словарь не найден.</response>
+        </member>
+        <member name="M:SquidWords.Controllers.PersonalDictionariesController.Put(SquidWords.Models.PersonalDictionary)">
+            <summary>
+            Обновляет персональный словарь.
+            </summary>
+            <param name="dictionary">Персональный словарь в новом состоянии.</param>
+            <response code="200">Персональный словарь создан.</response>
+            <response code="400">Не корректный запрос.</response>
+            <response code="403">В доступе отказано.</response>
+            <response code="404">Словарь не найден.</response>
+        </member>
+        <member name="M:SquidWords.Controllers.PersonalWordsController.SendLesson(System.Collections.Generic.List{SquidWords.Models.PersonalWord})">
+            <summary>
+            Принимает данные завершенного урока, и обновляет персональные словари в соответствии с ними.
+            </summary>
+            <param name="PersonalWords">Массив персональных слов представляющий из себя оконченный урок.</param>
+            <response code="200">Данные приняты.</response>
+            <response code="400">Не корректный запрос.</response>
+            <response code="403">В доступе отказано.</response>
+            <response code="404">Как минимум одно из затрагиваемых персональных слов отсутствует в БД.</response>
+        </member>
+        <member name="M:SquidWords.Controllers.PersonalWordsController.KnowWord(System.Int32)">
+            <summary>
+            Помечает персональное слово как изученное.
+            </summary>
+            <param name="id">Id персонального слова.</param>
+            <response code="200">Данные приняты.</response>
+            <response code="400">Не корректный запрос.</response>
+            <response code="403">В доступе отказано.</response>
+            <response code="404">Персональное слово с таким id не найдено.</response>
+        </member>
+        <member name="M:SquidWords.Controllers.PersonalWordsController.DontKnowWord(System.Int32)">
+            <summary>
+            Помечает персональное слово как не изученное.
+            </summary>
+            <param name="id">Id персонального слова.</param>
+            <response code="200">Данные приняты.</response>
+            <response code="400">Не корректный запрос.</response>
+            <response code="403">В доступе отказано.</response>
+            <response code="404">Персональное слово с таким id не найдено.</response>
+        </member>
+    </members>
+</doc>

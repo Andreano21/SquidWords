@@ -8,12 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SquidWords.Data;
 using SquidWords.Models;
+using SquidWords.Models.Accounts;
 
 namespace SquidWords.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DictionariesController : ControllerBase
+    public class DictionariesController : BaseController
     {
         private readonly ApplicationDbContext db;
 
@@ -31,7 +32,10 @@ namespace SquidWords.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Dictionary>> Get(int id)
         {
-            Dictionary dictionary = await db.Dictionaries.Where(d => d.Id == id)
+            if (!db.Dictionaries.Any(d => d.Id == id))
+                return NotFound();
+
+            Dictionary dictionary = await db.Dictionaries.Where(d => d.Id == id && d.IsPublic == true)
                                                             .Include(d => d.SourceLanguage)
                                                             .Include(d => d.TargetLanguage)
                                                             .FirstOrDefaultAsync(x => x.Id == id);
@@ -43,14 +47,20 @@ namespace SquidWords.Controllers
             return new ObjectResult(dictionary);
         }
 
+        /// <summary>
+        /// Создать базовый словарь
+        /// </summary>
+        /// <param name="dictionary">Словарь для добавления в БД</param>
+        /// <response code="403">В доступе отказано.</response>
+        /// <response code="404">Словарь не найден.</response>
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Dictionary>> Post(Dictionary dictionary)
         {
             if (dictionary == null)
-            {
-                return BadRequest();
-            }
+                return NotFound();
+
+            dictionary.AuthorId = Account.Id;
 
             db.Dictionaries.Add(dictionary);
             await db.SaveChangesAsync();
@@ -61,17 +71,20 @@ namespace SquidWords.Controllers
         [HttpPut]
         public async Task<ActionResult<Dictionary>> Put(Dictionary dictionary)
         {
+            ///////////// Обновить следом все связанные персональные словари
+
             if (dictionary == null)
-            {
-                return BadRequest();
-            }
-            if (!db.Dictionaries.Any(x => x.Id == dictionary.Id))
-            {
                 return NotFound();
-            }
+
+            if (!db.Dictionaries.Any(x => x.Id == dictionary.Id))
+                return NotFound(); 
+
+            if (Account.Id != dictionary.AuthorId || Account.Role != Role.Admin)
+                return Unauthorized();
 
             db.Update(dictionary);
             await db.SaveChangesAsync();
+             
             return Ok(dictionary);
         }
 
@@ -80,13 +93,16 @@ namespace SquidWords.Controllers
         public async Task<ActionResult<Dictionary>> Delete(int id)
         {
             Dictionary dictionary = db.Dictionaries.FirstOrDefault(x => x.Id == id);
+
             if (dictionary == null)
-            {
                 return NotFound();
-            }
+
+            if (Account.Id != dictionary.AuthorId || Account.Role != Role.Admin)
+                return Unauthorized();
+
             db.Dictionaries.Remove(dictionary);
             await db.SaveChangesAsync();
-            return Ok(dictionary);
+            return Ok();
         }
     }
 }

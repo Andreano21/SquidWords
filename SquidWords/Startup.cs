@@ -18,6 +18,9 @@ using SquidWords.Helpers;
 using SquidWords.Services;
 using SquidWords.Middleware;
 using AutoMapper;
+using Swashbuckle.AspNetCore.Annotations;
+using System.IO;
+using Microsoft.OpenApi.Models;
 
 namespace SquidWords
 {
@@ -38,6 +41,20 @@ namespace SquidWords
             services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSwaggerGen();
+            // Add the detail information for the API.
+            services.ConfigureSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "My API - V1",
+                        Version = "v1"
+                    }
+                );
+
+                var filePath = Path.Combine(System.AppContext.BaseDirectory, "SquidWords.xml");
+                options.IncludeXmlComments(filePath);
+            });
 
             // configure strongly typed settings objects
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
