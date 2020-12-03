@@ -62,6 +62,15 @@ namespace SquidWords.Controllers
 
             dictionary.AuthorId = Account.Id;
 
+            Language lengSource = db.Languages.FirstOrDefault(l => l.Name == dictionary.SourceLanguage.Name);
+            Language lengTarget = db.Languages.FirstOrDefault(l => l.Name == dictionary.TargetLanguage.Name);
+
+            if (lengTarget != null)
+                dictionary.TargetLanguage = lengTarget;
+
+            if (lengSource != null)
+                dictionary.SourceLanguage = lengSource;
+
             db.Dictionaries.Add(dictionary);
             await db.SaveChangesAsync();
             return Ok(dictionary);

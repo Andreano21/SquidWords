@@ -1,5 +1,0 @@
-{
-  "ConnectionStrings": {
-    "ReleaseConnection": "server=localhost;UserId=root;Password=1234;database=SquidWordsDb;"
-  }
-}
