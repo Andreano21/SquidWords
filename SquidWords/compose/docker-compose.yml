@@ -1,0 +1,17 @@
+﻿version: '3.4'
+
+services:
+  squidwords:
+    image: andrean4ik/squidwords
+    container_name: squidwords
+    depends_on:
+      - db
+    ports:
+      - 9000:80
+
+  db:
+    image: mysql:5.7
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "12345678"
