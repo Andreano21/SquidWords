@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "ReleaseConnection": "server=db;UserId=root;Password=12345678;database=swdb;"
+  }
+}
