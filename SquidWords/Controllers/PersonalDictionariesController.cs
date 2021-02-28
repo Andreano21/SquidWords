@@ -259,7 +259,7 @@ namespace SquidWords.Controllers
             if (dictionary == null)
                 return NotFound();
 
-            if (dictionary.AuthorId != Account.Id || !dictionary.IsPublic)
+            if (dictionary.AuthorId != Account.Id || dictionary.IsPublic)
                 return StatusCode(403);
 
             PersonalDictionary PersonalDictionary = await db.PersonalDictionaries
