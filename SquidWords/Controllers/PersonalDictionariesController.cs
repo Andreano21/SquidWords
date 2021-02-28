@@ -30,7 +30,10 @@ namespace SquidWords.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PersonalDictionary>>> Get()
         {
-            return await db.PersonalDictionaries.Where(pd => pd.UserId == Account.Id).ToListAsync();
+            return await db.PersonalDictionaries.Where(pd => pd.UserId == Account.Id)
+                                                .Include(pd => pd.Dictionary)
+                                                .Include(pw => pw.PersonalWords)
+                                                .ToListAsync();
         }
 
         /// <summary>
@@ -259,8 +262,9 @@ namespace SquidWords.Controllers
             if (dictionary == null)
                 return NotFound();
 
-            if (dictionary.AuthorId != Account.Id || dictionary.IsPublic)
-                return StatusCode(403);
+            if (!dictionary.IsPublic)
+               if(dictionary.AuthorId != Account.Id)
+                  return StatusCode(403);
 
             PersonalDictionary PersonalDictionary = await db.PersonalDictionaries
                 .Where(pd => pd.Dictionary.Id == dictionary.Id && dictionary.AuthorId == Account.Id)
@@ -278,6 +282,11 @@ namespace SquidWords.Controllers
             PersonalDictionary = new PersonalDictionary(dictionary);
 
             PersonalDictionary.UserId = Account.Id;
+
+            foreach (PersonalWord pw in PersonalDictionary.PersonalWords)
+            { 
+               pw.UserId = Account.Id;
+            }
 
             db.PersonalDictionaries.Add(PersonalDictionary);
             await db.SaveChangesAsync();

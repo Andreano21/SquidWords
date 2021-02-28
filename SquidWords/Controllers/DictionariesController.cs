@@ -26,7 +26,10 @@ namespace SquidWords.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Dictionary>>> Get()
         {
-            return await db.Dictionaries.Include(d => d.SourceLanguage).Include(d => d.TargetLanguage).ToListAsync();
+            return await db.Dictionaries.Include(d => d.SourceLanguage)
+                                        .Include(d => d.TargetLanguage)
+                                        .Include(w => w.Words)
+                                        .ToListAsync();
         }
 
         [HttpGet("{id}")]

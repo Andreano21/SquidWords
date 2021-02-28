@@ -13,5 +13,9 @@ services:
     image: mysql:5.7
     container_name: db
     restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - /var/mysql_data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: "12345678"
