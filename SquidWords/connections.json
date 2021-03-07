@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
     "ReleaseConnection": "server=db;UserId=root;Password=12345678;database=swdb;"
-    //"ReleaseConnection": "server=194.67.116.26;UserId=root;Password=12345678;database=swdb;"
+    //"ReleaseConnection": "server=194.67.87.190;UserId=root;Password=12345678;database=swdb;"
   }
 }

@@ -48,9 +48,9 @@
         </member>
         <member name="M:SquidWords.Controllers.PersonalDictionariesController.Get(System.Int32)">
             <summary>
-            Получить персональный словарь по индексу.
+            Получить персональный словарь по Id.
             </summary>
-            <param name="id">Id базового словаря на основе которого будет создан персональный</param>
+            <param name="id">Id персонального словаря.</param>
             <response code="403">В доступе отказано.</response>
             <response code="404">Словарь не найден.</response>
         </member>

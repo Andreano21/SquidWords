@@ -218,9 +218,9 @@ namespace SquidWords.Controllers
         }
 
         /// <summary>
-        /// Получить персональный словарь по индексу.
+        /// Получить персональный словарь по Id.
         /// </summary>
-        /// <param name="id">Id базового словаря на основе которого будет создан персональный</param>
+        /// <param name="id">Id персонального словаря.</param>
         /// <response code="403">В доступе отказано.</response>
         /// <response code="404">Словарь не найден.</response>
         [HttpGet("{id}")]
@@ -267,7 +267,7 @@ namespace SquidWords.Controllers
                   return StatusCode(403);
 
             PersonalDictionary PersonalDictionary = await db.PersonalDictionaries
-                .Where(pd => pd.Dictionary.Id == dictionary.Id && dictionary.AuthorId == Account.Id)
+                .Where(pd => pd.Dictionary.Id == dictionary.Id && pd.UserId == Account.Id)
                 .Include(pd => pd.Dictionary)
                 .Include(pd => pd.PersonalWords)
                     .ThenInclude(d => d.Word)
@@ -323,17 +323,19 @@ namespace SquidWords.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<PersonalDictionary>> Delete(int id)
         {
-            PersonalDictionary dictionary = db.PersonalDictionaries.FirstOrDefault(x => x.Id == id);
+            PersonalDictionary dictionary = db.PersonalDictionaries
+                                              .Where(x => x.Id == id)
+                                              .Include(x=> x.PersonalWords)
+                                              .FirstOrDefault();
             if (dictionary == null)
-            {
-                return NotFound();
-            }
+               return NotFound();
+
+            if (dictionary.UserId != Account.Id)
+               return StatusCode(403);
+
             db.PersonalDictionaries.Remove(dictionary);
-            await db.SaveChangesAsync();
-            return Ok();
+               await db.SaveChangesAsync();
+               return Ok();
         }
     }
-
-
-
 }
