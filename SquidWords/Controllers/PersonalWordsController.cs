@@ -71,8 +71,8 @@ namespace SquidWords.Controllers
         /// <response code="400">Не корректный запрос.</response>
         /// <response code="403">В доступе отказано.</response>
         /// <response code="404">Персональное слово с таким id не найдено.</response>
-        [HttpPut("knowword")]
-        public async Task<ActionResult<PersonalDictionary>> KnowWord(int id)
+        [HttpPut("knowword/{id}")]
+        public async Task<ActionResult> KnowWord(int id)
         {
             if (id <= 0)
                 return BadRequest();
@@ -100,8 +100,8 @@ namespace SquidWords.Controllers
         /// <response code="400">Не корректный запрос.</response>
         /// <response code="403">В доступе отказано.</response>
         /// <response code="404">Персональное слово с таким id не найдено.</response>
-        [HttpPut("dontknowword")]
-        public async Task<ActionResult<PersonalDictionary>> DontKnowWord(int id)
+        [HttpPut("dontknowword/{id}")]
+        public async Task<ActionResult> DontKnowWord(int id)
         {
             if (id <= 0)
                 return BadRequest();  
